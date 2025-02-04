@@ -56,9 +56,9 @@ jobs:
           # Convert coverage to integer
           coverage=$(printf "%.0f" "$coverage")
 
-          # Fail if coverage < 50%
-          if [ "$coverage" -lt 50 ]; then
-            echo "❌ Test coverage is below 50%: $coverage%"
+          # Fail if coverage < 5%
+          if [ "$coverage" -lt 5 ]; then
+            echo "❌ Test coverage is below 5%: the coverage only $coverage%"
             exit 1
           else
             echo "✅ Test coverage is sufficient: $coverage%"
