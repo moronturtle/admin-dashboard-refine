@@ -1,5 +1,17 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "eslint:recommended"],
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "eslint:recommended",
+    "plugin:jest/recommended"
+  ],
+  "plugins": ["jest"],
   "rules": {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -7,6 +19,7 @@
       { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "@typescript-eslint/no-explicit-any": "error"
+    "@typescript-eslint/no-explicit-any": "error",
+    "no-undef": "off"
   }
 }
