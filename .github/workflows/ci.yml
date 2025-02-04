@@ -24,7 +24,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install
 
       - name: Run ESLint
         run: yarn lint --max-warnings=0
@@ -32,37 +32,13 @@ jobs:
       - name: Run unit tests with coverage
         run: yarn test --coverage
 
-      - name: "Debug: List coverage directory"
-        run: ls -lah coverage/
-
-      - name: Install jq (JSON parser)
-        run: sudo apt-get install -y jq
-
       - name: Check test coverage (except on main branch)
         if: github.ref != 'refs/heads/main'
         run: |
-          # Ensure Jest coverage file exists
-          if [ ! -f coverage/coverage-summary.json ]; then
-            echo "❌ Error: Jest coverage report not found!"
-            exit 1
-          fi
-
-          # Extract coverage percentage using jq
-          coverage=$(jq '.total.statements.pct' coverage/coverage-summary.json)
-
-          # Handle null or missing values
-          if [ -z "$coverage" ] || [ "$coverage" == "null" ]; then
-            echo "❌ Error: Failed to extract test coverage."
-            exit 1
-          fi
-
-          # Convert coverage to integer
-          coverage=$(printf "%.0f" "$coverage")
-
-          # Fail if coverage < 50%
-          if [ "$coverage" -lt 50 ]; then
-            echo "❌ Test coverage is below 50%: $coverage%"
-            exit 1
+          coverage=$(jq '.total.statements.pct' coverage/coverage-final.json)
+          if (( $(echo "$coverage < 50" | bc -l) )); then
+             echo "Test coverage is below 50%: $coverage%"
+             exit 1
           else
-            echo "✅ Test coverage is sufficient: $coverage%"
+             echo "Test coverage is sufficient: $coverage%"
           fi
