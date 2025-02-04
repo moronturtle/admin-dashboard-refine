@@ -19,7 +19,8 @@ const mockUsers = [
 ];
 
 export const authProviderClient: AuthProvider = {
-  login: async ({ email, username, password, remember }) => {
+  // { email, username, password, remember } possible paramater for login function
+  login: async () => {
     // Suppose we actually send a request to the back end here.
     const user = mockUsers[0];
 
