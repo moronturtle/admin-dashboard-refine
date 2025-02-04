@@ -30,15 +30,47 @@ jobs:
         run: yarn lint --max-warnings=0
 
       - name: Run unit tests with coverage
-        run: yarn test --coverage
+        run: yarn test --coverage --ci
+
+      - name: "Debug: List coverage directory"
+        run: |
+          echo "Listing coverage directory..."
+          ls -lah coverage/
+
+      - name: Ensure Jest coverage file exists
+        run: |
+          if [ ! -f coverage/coverage-final.json ]; then
+            echo "❌ Jest coverage report not found!"
+            exit 1
+          else
+            echo "✅ Jest coverage report exists!"
+          fi
 
       - name: Check test coverage (except on main branch)
         if: github.ref != 'refs/heads/main'
         run: |
+          # Ensure Jest ran and coverage exists
+          if [ ! -f coverage/coverage-final.json ]; then
+            echo "❌ Jest coverage report not found!"
+            exit 1
+          fi
+
+          # Extract coverage percentage
           coverage=$(jq '.total.statements.pct' coverage/coverage-final.json)
-          if (( $(echo "$coverage < 50" | bc -l) )); then
-             echo "Test coverage is below 50%: $coverage%"
-             exit 1
+
+          # Handle null or missing values
+          if [ -z "$coverage" ] || [ "$coverage" == "null" ]; then
+            echo "❌ Error: Failed to extract test coverage."
+            exit 1
+          fi
+
+          # Convert coverage to integer
+          coverage=$(printf "%.0f" "$coverage")
+
+          # Fail if coverage < 50%
+          if [ "$coverage" -lt 50 ]; then
+            echo "❌ Test coverage is below 50%: $coverage%"
+            exit 1
           else
-             echo "Test coverage is sufficient: $coverage%"
+            echo "✅ Test coverage is sufficient: $coverage%"
           fi
