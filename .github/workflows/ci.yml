@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - '*'
+      - "*"
   pull_request:
     branches:
       - main
-      - '*'
+      - "*"
 
 jobs:
   lint-and-test:
@@ -35,10 +35,10 @@ jobs:
       - name: Check test coverage (except on main branch)
         if: github.ref != 'refs/heads/main'
         run: |
-          coverage=$(yarn jest --coverage --json --outputFile=coverage-summary.json && cat coverage-summary.json | jq '.coverageMap["total"].statements.pct')
+          coverage=$(jq '.total.statements.pct' coverage/coverage-summary.json)
           if (( $(echo "$coverage < 50" | bc -l) )); then
-            echo "Test coverage is below 50%: $coverage%"
-            exit 1
+             echo "Test coverage is below 50%: $coverage%"
+             exit 1
           else
-            echo "Test coverage is sufficient: $coverage%"
+             echo "Test coverage is sufficient: $coverage%"
           fi
