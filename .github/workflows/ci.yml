@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - '*'
+  pull_request:
+    branches:
+      - main
+      - '*'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run ESLint
+        run: yarn lint --max-warnings=0
+
+      - name: Run unit tests with coverage
+        run: yarn test --coverage
+
+      - name: Check test coverage (except on main branch)
+        if: github.ref != 'refs/heads/main'
+        run: |
+          coverage=$(yarn jest --coverage --json --outputFile=coverage-summary.json && cat coverage-summary.json | jq '.coverageMap["total"].statements.pct')
+          if (( $(echo "$coverage < 50" | bc -l) )); then
+            echo "Test coverage is below 50%: $coverage%"
+            exit 1
+          else
+            echo "Test coverage is sufficient: $coverage%"
+          fi
