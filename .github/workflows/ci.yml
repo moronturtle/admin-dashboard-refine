@@ -32,31 +32,20 @@ jobs:
       - name: Run unit tests with coverage
         run: yarn test --coverage --ci
 
-      - name: "Debug: List coverage directory"
-        run: |
-          echo "Listing coverage directory..."
-          ls -lah coverage/
-
-      - name: Ensure Jest coverage file exists
-        run: |
-          if [ ! -f coverage/coverage-final.json ]; then
-            echo "❌ Jest coverage report not found!"
-            exit 1
-          else
-            echo "✅ Jest coverage report exists!"
-          fi
+      - name: "Run unit test for get coverage"
+        run: yarn test --coverage --coverageReporters="json-summary"
 
       - name: Check test coverage (except on main branch)
         if: github.ref != 'refs/heads/main'
         run: |
           # Ensure Jest ran and coverage exists
-          if [ ! -f coverage/coverage-final.json ]; then
+          if [ ! -f coverage/coverage-summary.json ]; then
             echo "❌ Jest coverage report not found!"
             exit 1
           fi
 
           # Extract coverage percentage
-          coverage=$(jq '.total.statements.pct' coverage/coverage-final.json)
+          coverage=$(jq '.total.statements.pct' coverage/coverage-summary.json)
 
           # Handle null or missing values
           if [ -z "$coverage" ] || [ "$coverage" == "null" ]; then
