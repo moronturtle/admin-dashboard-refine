@@ -1,5 +1,5 @@
-import { Header } from "@components/header";
-import { authProviderServer } from "@providers/auth-provider/auth-provider.server";
+import { Header } from "@/components/header";
+import { authProviderServer } from "@/providers/auth-provider/auth-provider.server";
 import { ThemedLayoutV2 } from "@refinedev/antd";
 import { redirect } from "next/navigation";
 import React from "react";

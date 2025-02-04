@@ -1,4 +1,4 @@
-import { DevtoolsProvider } from "@providers/devtools";
+import { DevtoolsProvider } from "@refinedev/devtools";
 import { useNotificationProvider } from "@refinedev/antd";
 import { GitHubBanner, Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
@@ -8,9 +8,9 @@ import { cookies } from "next/headers";
 import React, { Suspense } from "react";
 
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { ColorModeContextProvider } from "@contexts/color-mode";
-import { authProviderClient } from "@providers/auth-provider/auth-provider.client";
-import { dataProvider } from "@providers/data-provider";
+import { ColorModeContextProvider } from "@/contexts/color-mode";
+import { authProviderClient } from "@/providers/auth-provider/auth-provider.client";
+import { dataProvider } from "@/providers/data-provider";
 import "@refinedev/antd/dist/reset.css";
 
 export const metadata: Metadata = {
